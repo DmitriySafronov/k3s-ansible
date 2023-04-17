@@ -9,7 +9,7 @@
     name: net.ipv4.ip_forward
     value: "1"
     state: present
-    reload: yes
+    reload: true
 
 - name: Enable IPv6 forwarding
   when: ansible_all_ipv6_addresses
@@ -17,7 +17,7 @@
     name: net.ipv6.conf.all.forwarding
     value: "1"
     state: present
-    reload: yes
+    reload: true
 
 - name: Add br_netfilter to /etc/modules-load.d/
   when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
@@ -38,7 +38,7 @@
     name: "{{ item }}"
     value: "1"
     state: present
-    reload: yes
+    reload: true
   loop:
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
