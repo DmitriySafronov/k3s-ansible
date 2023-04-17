@@ -1,5 +1,5 @@
-# Frozen requirements for ansible 2.10
+# Frozen requirements for ansible stable
 ansible>=2.12<2.13
-ansible-lint<6.10
+ansible-lint
 yamllint
 pytest
