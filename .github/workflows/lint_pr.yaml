@@ -42,7 +42,7 @@ jobs:
       #   run: ansible-galaxy install -r requirements.yml
 
       - name: Run ansible-lint
-        run: ansible-lint -c .ansible-lint
+        run: ansible-lint -c .ansible-lint -v
 
       - name: Upload ansible-lint SARIF file
         uses: github/codeql-action/upload-sarif@v2
