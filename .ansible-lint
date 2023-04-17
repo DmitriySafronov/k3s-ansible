@@ -3,8 +3,5 @@
 # min, basic, moderate, safety, shared, production
 profile: production
 
-# Allows dumping of results in SARIF format
-sarif_file: ansible-lint-results.sarif
-
 # Offline mode disables installation of requirements.yml and schema refreshing
 offline: false
