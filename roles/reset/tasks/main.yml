@@ -3,7 +3,7 @@
   ansible.legacy.systemd:
     name: "{{ item }}"
     state: stopped
-    enabled: no
+    enabled: false
   failed_when: false
   with_items:
     - k3s
@@ -43,4 +43,4 @@
 
 - name: Systemd reload
   ansible.legacy.systemd:
-    daemon_reload: yes
+    daemon_reload: true
