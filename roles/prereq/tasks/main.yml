@@ -1,0 +1,60 @@
+---
+- name: Set SELinux to disabled state
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  ansible.posix.selinux:
+    state: disabled
+
+- name: Enable IPv4 forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    reload: yes
+
+- name: Enable IPv6 forwarding
+  when: ansible_all_ipv6_addresses
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: "1"
+    state: present
+    reload: yes
+
+- name: Add br_netfilter to /etc/modules-load.d/
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  ansible.legacy.copy:
+    content: "br_netfilter"
+    dest: /etc/modules-load.d/br_netfilter.conf
+    mode: "u=rw,g=,o="
+
+- name: Load br_netfilter
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Set bridge-nf-call-iptables (just to be sure)
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+    reload: yes
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+
+- name: Add /usr/local/bin to sudo secure_path
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  ansible.legacy.lineinfile:
+    line: 'Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin'
+    regexp: "Defaults(\\s)*secure_path(\\s)*="
+    state: present
+    insertafter: EOF
+    path: /etc/sudoers
+    validate: 'visudo -cf %s'
+
+- name: Install AppArmor
+  when: ansible_distribution in ['Ubuntu', 'Debian']
+  ansible.builtin.package:
+    name: "apparmor"
+    state: "present"

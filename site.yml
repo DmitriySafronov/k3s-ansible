@@ -1,0 +1,30 @@
+---
+
+- name: Prepare
+  hosts: k3s_cluster
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: prereq
+    - role: download
+    - role: raspberrypi
+
+- name: Install masters
+  hosts: master
+  become: yes
+  roles:
+    - role: k3s_master
+
+# Separate play!
+- name: Configure masters
+  hosts: master
+  become: yes
+  roles:
+    - role: config_kubeconfig
+    - role: config_token
+
+- name: Install nodes
+  hosts: node
+  become: yes
+  roles:
+    - role: k3s_node

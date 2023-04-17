@@ -1,0 +1,30 @@
+---
+
+- name: Copy K3S environment file
+  ansible.legacy.template:
+    src: "k3s.service.env.j2"
+    dest: "{{ k3s_systemd_dir }}/k3s.service.env"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart K3S service
+  when: k3s_env_node is defined
+
+- name: Copy K3S environment file with connection properties
+  ansible.legacy.template:
+    src: "k3s.service.env.connection.j2"
+    dest: "{{ k3s_systemd_dir }}/k3s.service.env.connection"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart K3S service
+  when: k3s_apiserver_endpoint is defined and k3s_apiserver_token_agent is defined
+
+- name: Copy K3S service file
+  ansible.legacy.template:
+    src: "k3s.service.j2"
+    dest: "{{ k3s_systemd_dir }}/k3s.service"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart K3S service

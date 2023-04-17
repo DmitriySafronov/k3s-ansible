@@ -1,0 +1,71 @@
+---
+
+- name: Master(s) setup
+  when: >
+    groups['master'] | length == 1 or
+    (groups['master'] | length > 1 and groups['master'] | length % 2 != 0 and
+    k3s_apiserver_endpoint is defined and k3s_apiserver_token is defined)
+  block:
+
+    - name: Copy K3S environment file with agent token
+      when: k3s_apiserver_token_agent is defined
+      ansible.legacy.template:
+        src: "k3s.service.env.agent_token.j2"
+        dest: "{{ k3s_systemd_dir }}/k3s.service.env.agent_token"
+        owner: root
+        group: root
+        mode: 0644
+      notify: Restart K3S service
+
+    - name: Copy K3S environment file
+      when: k3s_env_master is defined
+      ansible.legacy.template:
+        src: "k3s.service.env.j2"
+        dest: "{{ k3s_systemd_dir }}/k3s.service.env"
+        owner: root
+        group: root
+        mode: 0644
+      notify: Restart K3S service
+
+    - name: Cluster setup
+      when: groups['master'] | length > 1 and k3s_apiserver_endpoint is defined and k3s_apiserver_token is defined
+      block:
+        - name: Copy K3S environment file with token
+          ansible.legacy.template:
+            src: "k3s.service.env.token.j2"
+            dest: "{{ k3s_systemd_dir }}/k3s.service.env.token"
+            owner: root
+            group: root
+            mode: 0644
+          notify: Restart K3S service
+        - name: Cluster initialization
+          ansible.builtin.include_tasks: init.yml
+        - name: Copy K3S environment file with apiserver url
+          ansible.legacy.template:
+            src: "k3s.service.env.apiserver.j2"
+            dest: "{{ k3s_systemd_dir }}/k3s.service.env.apiserver"
+            owner: root
+            group: root
+            mode: 0644
+          notify: Restart K3S service
+
+    - name: Copy K3S service file
+      ansible.legacy.template:
+        src: "k3s.service.j2"
+        dest: "{{ k3s_systemd_dir }}/k3s.service"
+        owner: root
+        group: root
+        mode: 0644
+      notify: Restart K3S service
+
+    - name: Create kubectl symlink
+      ansible.legacy.file:
+        src: /usr/local/bin/k3s
+        dest: /usr/local/bin/kubectl
+        state: link
+
+    - name: Create crictl symlink
+      ansible.legacy.file:
+        src: /usr/local/bin/k3s
+        dest: /usr/local/bin/crictl
+        state: link

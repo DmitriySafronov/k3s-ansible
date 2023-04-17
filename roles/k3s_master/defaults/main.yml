@@ -1,0 +1,16 @@
+---
+
+k3s_systemd_dir: "/etc/systemd/system"
+
+k3s_data_dir: "/var/lib/rancher/k3s"
+
+k3s_server_args_init: >-
+  {% if groups['master'] | length > 1 %}
+    {% if ansible_host == hostvars[groups['master'][0]]['ansible_host'] | default(groups['master'][0]) %}
+      --cluster-init --tls-san {{ k3s_apiserver_endpoint }}
+    {% else %}
+      --server https://{{ k3s_apiserver_endpoint }}:6443
+    {% endif %}
+    --data-dir {{ k3s_data_dir }}
+  {% endif %}
+  {{ k3s_server_args_extra | default("") }}

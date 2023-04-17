@@ -1,0 +1,27 @@
+---
+
+- name: Extract agent-token
+  when: k3s_apiserver_token_agent is not defined
+  block:
+    - name: Wait for agent-token
+      ansible.legacy.wait_for:
+        path: "{{ k3s_data_dir }}/server/agent-token"
+    - name: Register agent-token file access mode
+      ansible.legacy.stat:
+        path: "{{ k3s_data_dir }}/server/agent-token"
+      register: p
+    - name: Change file access agent-token
+      ansible.legacy.file:
+        path: "{{ k3s_data_dir }}/server/agent-token"
+        mode: "g+r,o+r"
+    - name: Read agent-token from master
+      ansible.legacy.slurp:
+        path: "{{ k3s_data_dir }}/server/agent-token"
+      register: agent_token
+    - name: Store Master agent-token
+      ansible.legacy.set_fact:
+        token: "{{ agent_token.content | b64decode | regex_replace('\n', '') }}"
+    - name: Restore agent-token file access
+      ansible.legacy.file:
+        path: "{{ k3s_data_dir }}/server/agent-token"
+        mode: "{{ p.stat.mode }}"
