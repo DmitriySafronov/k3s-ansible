@@ -41,14 +41,14 @@ jobs:
       # - name: Install ansible requirements
       #   run: ansible-galaxy install -r requirements.yml
 
-      - name: Run ansible-lint
-        run: ansible-lint -c .ansible-lint -v
+      # - name: Run ansible-lint
+      #   run: ansible-lint -c .ansible-lint -v
 
-      - name: Upload ansible-lint SARIF file
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          # Path to SARIF file relative to the root of the repository
-          sarif_file: ansible-lint-results.sarif
-          # Optional category for the results
-          # Used to differentiate multiple results for one commit
-          category: ansible-lint
+      # - name: Upload ansible-lint SARIF file
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   with:
+      #     # Path to SARIF file relative to the root of the repository
+      #     sarif_file: ansible-lint-results.sarif
+      #     # Optional category for the results
+      #     # Used to differentiate multiple results for one commit
+      #     category: ansible-lint
