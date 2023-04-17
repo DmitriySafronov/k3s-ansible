@@ -3,6 +3,6 @@
 - name: Restart K3S service
   ansible.legacy.systemd:
     name: k3s
-    daemon_reload: yes
+    daemon_reload: true
     state: restarted
-    enabled: yes
+    enabled: true
