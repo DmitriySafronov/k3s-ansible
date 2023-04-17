@@ -41,6 +41,9 @@ jobs:
       # - name: Install ansible requirements
       #   run: ansible-galaxy install -r requirements.yml
 
+      - name: Run ansible-lint
+        run: ansible-lint -vv
+
       # - name: Run ansible-lint
       #   run: ansible-lint -c .ansible-lint -v
 
