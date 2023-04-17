@@ -1,7 +1,5 @@
 # Build a Kubernetes cluster using k3s via Ansible
 
-[![Lint PR](https://github.com/DmitriySafronov/k3s-ansible/actions/workflows/lint_pr.yaml/badge.svg)](https://github.com/DmitriySafronov/k3s-ansible/actions/workflows/lint_pr.yaml)[![Lint Scheduled](https://github.com/DmitriySafronov/k3s-ansible/actions/workflows/lint_scheduled.yaml/badge.svg)](https://github.com/DmitriySafronov/k3s-ansible/actions/workflows/lint_scheduled.yaml)
-
 Original: <https://github.com/k3s-io/k3s-ansible>
 
 ---
